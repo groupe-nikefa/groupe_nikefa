@@ -1,0 +1,69 @@
+name: nikefa
+description: "GROUPE NIKEFA - Medical Supply Marketplace"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+
+  # State Management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Routing
+  go_router: ^14.2.0
+
+  # Backend & Auth
+  supabase_flutter: ^2.5.7
+
+  # Connectivity & Offline Detection
+  connectivity_plus: ^6.0.5
+
+  # Image Handling
+  cached_network_image: ^3.3.1
+  image_picker: ^1.1.2
+  flutter_image_compress: ^2.3.0
+
+  # Icons
+  lucide_icons: any
+  flutter_svg: ^2.0.10
+
+  # Local Persistence
+  shared_preferences: ^2.2.3
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  cupertino_icons: ^1.0.8
+
+  # Notifications
+  flutter_local_notifications: ^18.0.0
+  timezone: ^0.9.4
+  flutter_dotenv: ^6.0.1
+  path: ^1.9.1
+
+dev_dependencies:
+  analyzer: ^6.4.1
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  riverpod_generator: ^2.4.0
+  build_runner: ^2.4.11
+  custom_lint: ^0.6.4
+  riverpod_lint: ^2.3.10
+  hive_generator: ^2.0.1
+
+flutter:
+  uses-material-design: true
+  generate: true  # Enables flutter_gen for localization
+  
+  assets:
+    - assets/images/
+    - .env
