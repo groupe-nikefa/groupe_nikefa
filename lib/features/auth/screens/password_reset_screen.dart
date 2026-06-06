@@ -119,12 +119,15 @@ class _PasswordResetScreenState extends ConsumerState<PasswordResetScreen> {
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
+                  autofillHints: const [AutofillHints.email],
+                  enableSuggestions: false,
                   decoration: InputDecoration(
                     labelText: l10n.email,
                     prefixIcon: const Icon(Icons.email_outlined),
                   ),
                   validator: _validateEmail,
                   textInputAction: TextInputAction.done,
+                  autocorrect: false,
                   onFieldSubmitted: (_) => _handleReset(),
                   enabled: !isLoading,
                 ),

@@ -5,6 +5,7 @@
 
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Enum representing password strength levels.
 enum PasswordStrength {
@@ -55,6 +56,19 @@ extension PasswordStrengthDisplay on PasswordStrength {
         PasswordStrength.medium => 'password_strength_medium',
         PasswordStrength.strong => 'password_strength_strong',
       };
+
+  /// Localized, human-readable label for this strength level.
+  ///
+  /// Resolves [l10nKey] through the active [AppLocalizations] so callers
+  /// can render the translated string instead of the raw key.
+  String label(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return switch (this) {
+      PasswordStrength.weak => l10n.password_strength_weak,
+      PasswordStrength.medium => l10n.password_strength_medium,
+      PasswordStrength.strong => l10n.password_strength_strong,
+    };
+  }
 
   /// Number of filled segments (out of 3).
   int get segments => switch (this) {
@@ -118,7 +132,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
         const SizedBox(height: 4),
         // Strength label
         Text(
-          strength.l10nKey,
+          strength.label(context),
           style: labelStyle ??
               Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: strength.color,

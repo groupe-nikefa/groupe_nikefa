@@ -5,6 +5,7 @@
 // On success, the user is auto-logged in and redirected based on role.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -112,6 +113,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       final user = ref.read(currentUserProvider);
       if (!mounted) return;
 
+      // Tell the platform that the autofill context is complete so the
+      // browser/OS can save the new credentials under the right fields.
+      TextInput.finishAutofillContext();
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.registration_success),
@@ -170,147 +175,163 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         isLoading: isLoading,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 16),
-                const BrandName(fontSize: 28),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.no_account_yet,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                const SizedBox(height: 24),
-
-                // ── Email field ─────────────────────────────
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    labelText: l10n.email,
-                    prefixIcon: const Icon(Icons.email_outlined),
+          // AutofillGroup tells the platform that all the form fields
+          // below belong together — preventing the browser from piping
+          // the email value into the password field (or vice versa).
+          child: AutofillGroup(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 16),
+                  const BrandName(fontSize: 28),
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.no_account_yet,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
-                  validator: _validateEmail,
-                  textInputAction: TextInputAction.next,
-                  autocorrect: false,
-                ),
-                const SizedBox(height: 16),
+                  const SizedBox(height: 24),
 
-                // ── Password field ──────────────────────────
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: _obscurePassword,
-                  decoration: InputDecoration(
-                    labelText: l10n.password,
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
-                      ),
-                      onPressed: () => setState(
-                        () => _obscurePassword = !_obscurePassword,
+                  // ── Email field ─────────────────────────────
+                  TextFormField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    autofillHints: const [AutofillHints.email],
+                    enableSuggestions: false,
+                    decoration: InputDecoration(
+                      labelText: l10n.email,
+                      prefixIcon: const Icon(Icons.email_outlined),
+                    ),
+                    validator: _validateEmail,
+                    textInputAction: TextInputAction.next,
+                    autocorrect: false,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // ── Password field ──────────────────────────
+                  TextFormField(
+                    controller: _passwordController,
+                    obscureText: _obscurePassword,
+                    autofillHints: const [AutofillHints.newPassword],
+                    enableSuggestions: false,
+                    decoration: InputDecoration(
+                      labelText: l10n.password,
+                      prefixIcon: const Icon(Icons.lock_outline),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                        ),
+                        onPressed: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
                       ),
                     ),
+                    validator: _validatePassword,
+                    textInputAction: TextInputAction.next,
+                    autocorrect: false,
+                    onChanged: (_) => setState(() {}), // Refresh strength bar.
                   ),
-                  validator: _validatePassword,
-                  textInputAction: TextInputAction.next,
-                  onChanged: (_) => setState(() {}), // Refresh strength bar.
-                ),
-                const SizedBox(height: 8),
+                  const SizedBox(height: 8),
 
-                // ── Password strength indicator ─────────────
-                PasswordStrengthIndicator(
-                  password: _passwordController.text,
-                ),
-                const SizedBox(height: 16),
+                  // ── Password strength indicator ─────────────
+                  PasswordStrengthIndicator(
+                    password: _passwordController.text,
+                  ),
+                  const SizedBox(height: 16),
 
-                // ── Confirm password field ──────────────────
-                TextFormField(
-                  controller: _confirmPasswordController,
-                  obscureText: _obscureConfirmPassword,
-                  decoration: InputDecoration(
-                    labelText: l10n.confirm_password,
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscureConfirmPassword
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
-                      ),
-                      onPressed: () => setState(
-                        () =>
-                            _obscureConfirmPassword = !_obscureConfirmPassword,
+                  // ── Confirm password field ──────────────────
+                  TextFormField(
+                    controller: _confirmPasswordController,
+                    obscureText: _obscureConfirmPassword,
+                    autofillHints: const [AutofillHints.newPassword],
+                    enableSuggestions: false,
+                    decoration: InputDecoration(
+                      labelText: l10n.confirm_password,
+                      prefixIcon: const Icon(Icons.lock_outline),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureConfirmPassword
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                        ),
+                        onPressed: () => setState(
+                          () =>
+                              _obscureConfirmPassword = !_obscureConfirmPassword,
+                        ),
                       ),
                     ),
+                    validator: _validateConfirmPassword,
+                    textInputAction: TextInputAction.next,
+                    autocorrect: false,
                   ),
-                  validator: _validateConfirmPassword,
-                  textInputAction: TextInputAction.next,
-                ),
-                const SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
-                // ── Phone field ─────────────────────────────
-                TextFormField(
-                  controller: _phoneController,
-                  keyboardType: TextInputType.phone,
-                  decoration: InputDecoration(
-                    labelText: l10n.phone,
-                    prefixIcon: const Icon(Icons.phone_outlined),
-                  ),
-                  validator: _validatePhone,
-                  textInputAction: TextInputAction.next,
-                ),
-                const SizedBox(height: 16),
-
-                // ── Account type dropdown ───────────────────
-                DropdownButtonFormField<AccountType>(
-                  initialValue: _selectedAccountType,
-                  decoration: InputDecoration(
-                    labelText: l10n.account_type,
-                    prefixIcon: const Icon(Icons.badge_outlined),
-                  ),
-                  items: AccountType.values.map((type) {
-                    return DropdownMenuItem(
-                      value: type,
-                      child: Row(
-                        children: [
-                          Icon(type.icon, size: 20),
-                          const SizedBox(width: 8),
-                          Text(_accountTypeLabel(l10n, type)),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() => _selectedAccountType = value);
-                    }
-                  },
-                ),
-                const SizedBox(height: 32),
-
-                // ── Register button ─────────────────────────
-                FilledButton(
-                  onPressed: isLoading ? null : _handleRegister,
-                  child: Text(l10n.register),
-                ),
-                const SizedBox(height: 16),
-
-                // ── Link to login ───────────────────────────
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(l10n.already_have_account),
-                    TextButton(
-                      onPressed: () => context.go('/login'),
-                      child: Text(l10n.login),
+                  // ── Phone field ─────────────────────────────
+                  TextFormField(
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    autofillHints: const [AutofillHints.telephoneNumber],
+                    enableSuggestions: false,
+                    decoration: InputDecoration(
+                      labelText: l10n.phone,
+                      prefixIcon: const Icon(Icons.phone_outlined),
                     ),
-                  ],
-                ),
-              ],
+                    validator: _validatePhone,
+                    textInputAction: TextInputAction.next,
+                    autocorrect: false,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // ── Account type dropdown ───────────────────
+                  DropdownButtonFormField<AccountType>(
+                    initialValue: _selectedAccountType,
+                    decoration: InputDecoration(
+                      labelText: l10n.account_type,
+                      prefixIcon: const Icon(Icons.badge_outlined),
+                    ),
+                    items: AccountType.values.map((type) {
+                      return DropdownMenuItem(
+                        value: type,
+                        child: Row(
+                          children: [
+                            Icon(type.icon, size: 20),
+                            const SizedBox(width: 8),
+                            Text(_accountTypeLabel(l10n, type)),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => _selectedAccountType = value);
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 32),
+
+                  // ── Register button ─────────────────────────
+                  FilledButton(
+                    onPressed: isLoading ? null : _handleRegister,
+                    child: Text(l10n.register),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // ── Link to login ───────────────────────────
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(l10n.already_have_account),
+                      TextButton(
+                        onPressed: () => context.go('/login'),
+                        child: Text(l10n.login),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
