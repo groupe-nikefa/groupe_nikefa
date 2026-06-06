@@ -118,8 +118,9 @@ class Category {
   ///
   /// Falls back to French if the Arabic description is null/empty.
   String? getLocalizedDescription(String localeCode) {
-    if (localeCode == 'ar')
+    if (localeCode == 'ar') {
       return descriptionAr?.isNotEmpty == true ? descriptionAr : descriptionFr;
+    }
     return descriptionFr;
   }
 

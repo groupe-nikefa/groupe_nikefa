@@ -80,6 +80,7 @@ class _AdminCategoriesScreenState extends ConsumerState<AdminCategoriesScreen> {
       BuildContext context, WidgetRef ref, String categoryId) async {
     final l10n = AppLocalizations.of(context)!;
     final categoriesAsync = await ref.read(adminCategoriesProvider.future);
+    if (!context.mounted) return;
     final allCategories = categoriesAsync.whereType<models.Category>().toList();
 
     final otherCategories = allCategories

@@ -162,8 +162,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         .map((value) {
                           final classification =
                               parseMedicalClassification(value);
-                          if (classification == null)
+                          if (classification == null) {
                             return const SizedBox.shrink();
+                          }
                           return _ClassificationChip(
                             classification: classification,
                           );

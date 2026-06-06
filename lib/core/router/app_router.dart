@@ -76,7 +76,9 @@ GoRouter createRouter() {
       if (!isAuthenticated && !hasSession && isProtectedRoute) return '/login';
 
       if ((isAuthenticated || hasSession) &&
-          (currentPath == '/login' || currentPath == '/register')) return '/';
+          (currentPath == '/login' || currentPath == '/register')) {
+        return '/';
+      }
 
       if (currentPath.startsWith('/admin') && !isAdmin) return '/';
 

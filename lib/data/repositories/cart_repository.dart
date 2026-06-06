@@ -186,8 +186,9 @@ class CartRepository {
         'updated_at': DateTime.now().toIso8601String(),
       };
       if (quantity != null) updates['quantity'] = quantity;
-      if (variantSelection != null)
+      if (variantSelection != null) {
         updates['variant_selection'] = variantSelection;
+      }
 
       await _client.from('cart_items').update(updates).eq('id', itemId);
       debugPrint('[CartRepository] Updated cart item: $itemId');
@@ -333,8 +334,9 @@ class CartRepository {
       if (existing == null) return;
 
       if (quantity != null) existing.quantity = quantity;
-      if (variantSelection != null)
+      if (variantSelection != null) {
         existing.variantSelection = variantSelection;
+      }
       existing.updatedAt = DateTime.now();
 
       await box.put(itemId, existing);
