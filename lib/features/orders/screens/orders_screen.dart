@@ -165,7 +165,7 @@ class _OrderCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('${order.totalAmount.toStringAsFixed(0)} DZD',
+                  Text('${order.totalAmount.toStringAsFixed(0)} FCFA',
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: AppColors.deepBlue,

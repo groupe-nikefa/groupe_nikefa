@@ -36,7 +36,7 @@ ON CONFLICT (slug) DO NOTHING;
 
 -- -----------------------------------------------------------
 -- 3. Sample products (skip if sku already exists)
---    Using via.placeholder.com (more reliable than placehold.co)
+--    Using Unsplash CDN images for an attractive sales demo
 -- -----------------------------------------------------------
 INSERT INTO products (sku, name_ar, name_fr, description_ar, description_fr, base_price, stock_quantity, category_id, images, is_featured) VALUES
   (
@@ -47,7 +47,7 @@ INSERT INTO products (sku, name_ar, name_fr, description_ar, description_fr, bas
     'Stéthoscope numérique haute précision avec écran LCD pour la surveillance du rythme cardiaque',
     125.00, 50,
     'a0000000-0000-0000-0000-000000000001',
-    ARRAY['https://via.placeholder.com/600x600/002664/ffffff?text=Stethoscope'],
+    ARRAY['https://images.unsplash.com/photo-1584982751601-97dcc096659c?auto=format&fit=crop&w=600&q=60'],
     true
   ),
   (
@@ -58,7 +58,7 @@ INSERT INTO products (sku, name_ar, name_fr, description_ar, description_fr, bas
     'Gants médicaux stériles en nitrile, sans latex, boîte de 100 unités',
     15.00, 500,
     'a0000000-0000-0000-0000-000000000002',
-    ARRAY['https://via.placeholder.com/600x600/002664/ffffff?text=Gants'],
+    ARRAY['https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?auto=format&fit=crop&w=600&q=60'],
     true
   ),
   (
@@ -69,7 +69,7 @@ INSERT INTO products (sku, name_ar, name_fr, description_ar, description_fr, bas
     'Seringues stériles à usage unique de 5 ml, boîte de 50 unités',
     8.50, 1000,
     'a0000000-0000-0000-0000-000000000002',
-    ARRAY['https://via.placeholder.com/600x600/002664/ffffff?text=Seringues'],
+    ARRAY['https://images.unsplash.com/photo-1632685061325-3f0f2c6a4a1e?auto=format&fit=crop&w=600&q=60'],
     false
   ),
   (
@@ -80,7 +80,7 @@ INSERT INTO products (sku, name_ar, name_fr, description_ar, description_fr, bas
     'Microscope électronique à fort grossissement pour usage en laboratoire avec éclairage LED',
     450.00, 15,
     'a0000000-0000-0000-0000-000000000003',
-    ARRAY['https://via.placeholder.com/600x600/002664/ffffff?text=Microscope'],
+    ARRAY['https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=600&q=60'],
     false
   ),
   (
@@ -91,7 +91,7 @@ INSERT INTO products (sku, name_ar, name_fr, description_ar, description_fr, bas
     'Masques médicaux N95 de haute qualité, boîte de 50 unités',
     25.00, 300,
     'a0000000-0000-0000-0000-000000000004',
-    ARRAY['https://via.placeholder.com/600x600/002664/ffffff?text=Masques+N95'],
+    ARRAY['https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=60'],
     true
   )
 ON CONFLICT (sku) DO NOTHING;

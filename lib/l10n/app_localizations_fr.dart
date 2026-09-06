@@ -648,7 +648,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profile_update_failed => 'Échec de la mise à jour du profil';
 
   @override
-  String get currency_symbol => 'DZD';
+  String get currency_symbol => 'FCFA';
 
   @override
   String get cancelled_status => 'Annulé';

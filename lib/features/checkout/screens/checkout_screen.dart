@@ -424,12 +424,12 @@ class _OrderReviewStep extends StatelessWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis),
                             Text(
-                                'x${item.quantity}  •  ${item.effectivePrice.toStringAsFixed(0)} DZD',
+                                'x${item.quantity}  •  ${item.effectivePrice.toStringAsFixed(0)} FCFA',
                                 style: const TextStyle(
                                     fontSize: 12,
                                     color: AppColors.textSecondary)),
                           ])),
-                      Text('${item.lineTotal.toStringAsFixed(0)} DZD',
+                      Text('${item.lineTotal.toStringAsFixed(0)} FCFA',
                           style: const TextStyle(
                               fontWeight: FontWeight.w600, fontSize: 13)),
                     ])),
@@ -465,7 +465,7 @@ class _OrderReviewStep extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(l10n.subtotal),
-                          Text('${total.toStringAsFixed(0)} DZD')
+                          Text('${total.toStringAsFixed(0)} FCFA')
                         ]),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -473,7 +473,7 @@ class _OrderReviewStep extends StatelessWidget {
                           Text(l10n.delivery_fee),
                           Text(deliveryFee == 0
                               ? l10n.free
-                              : '${deliveryFee.toStringAsFixed(0)} DZD')
+                              : '${deliveryFee.toStringAsFixed(0)} FCFA')
                         ]),
                     const Divider(),
                     Row(
@@ -483,7 +483,7 @@ class _OrderReviewStep extends StatelessWidget {
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold)),
                           Text(
-                              '${(total + deliveryFee).toStringAsFixed(0)} DZD',
+                              '${(total + deliveryFee).toStringAsFixed(0)} FCFA',
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.deepBlue,

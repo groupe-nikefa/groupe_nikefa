@@ -103,7 +103,7 @@ class OrderDetailScreen extends ConsumerWidget {
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white)),
-                        Text('${order.totalAmount.toStringAsFixed(0)} DZD',
+                        Text('${order.totalAmount.toStringAsFixed(0)} FCFA',
                             style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -319,13 +319,13 @@ class _OrderItemCard extends StatelessWidget {
                         style: const TextStyle(
                             fontSize: 11, color: AppColors.textSecondary)),
                   Text(
-                      'x${item.quantity}  •  ${item.unitPrice.toStringAsFixed(0)} DZD',
+                      'x${item.quantity}  •  ${item.unitPrice.toStringAsFixed(0)} FCFA',
                       style: const TextStyle(
                           fontSize: 12, color: AppColors.textSecondary)),
                 ],
               ),
             ),
-            Text('${item.lineTotal.toStringAsFixed(0)} DZD',
+            Text('${item.lineTotal.toStringAsFixed(0)} FCFA',
                 style:
                     const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
           ],

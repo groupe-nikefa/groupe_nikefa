@@ -635,7 +635,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profile_update_failed => 'فشل تحديث الملف الشخصي';
 
   @override
-  String get currency_symbol => 'د.أ.';
+  String get currency_symbol => 'FCFA';
 
   @override
   String get cancelled_status => 'ملغي';

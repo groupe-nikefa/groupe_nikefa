@@ -223,7 +223,7 @@ class _DismissibleCartItem extends ConsumerWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${item.effectivePrice.toStringAsFixed(0)} DZD',
+                        Text('${item.effectivePrice.toStringAsFixed(0)} FCFA',
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.deepBlue,
@@ -336,15 +336,15 @@ class _OrderSummary extends StatelessWidget {
           color: AppColors.surface,
           border: Border(top: BorderSide(color: Color(0xFFE0E0E0)))),
       child: Column(children: [
-        _row(l10n.subtotal, '${subtotal.toStringAsFixed(0)} DZD'),
+        _row(l10n.subtotal, '${subtotal.toStringAsFixed(0)} FCFA'),
         _row(
             l10n.delivery_fee,
             deliveryFee == 0
                 ? l10n.free
-                : '${deliveryFee.toStringAsFixed(0)} DZD',
+                : '${deliveryFee.toStringAsFixed(0)} FCFA',
             valueColor: deliveryFee == 0 ? Colors.green : null),
         const Divider(height: 20),
-        _row(l10n.total, '${grandTotal.toStringAsFixed(0)} DZD', isBold: true),
+        _row(l10n.total, '${grandTotal.toStringAsFixed(0)} FCFA', isBold: true),
         if (hasOutOfStock) ...[
           const SizedBox(height: 8),
           Text(l10n.remove_out_of_stock_items,

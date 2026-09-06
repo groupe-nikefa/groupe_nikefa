@@ -340,7 +340,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '${price.toStringAsFixed(2)} DZD',
+          '${price.toStringAsFixed(2)} FCFA',
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 color: AppColors.deepBlue,
                 fontWeight: FontWeight.bold,
@@ -348,7 +348,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         ),
         if (_selectedVariant != null && _quantity > 1)
           Text(
-            'Total: ${(price * _quantity).toStringAsFixed(2)} DZD',
+            'Total: ${(price * _quantity).toStringAsFixed(2)} FCFA',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -427,7 +427,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             final isSelected = _selectedVariant?.id == variant.id;
             return ChoiceChip(
               label: Text(
-                  '${variant.name} - ${variant.price.toStringAsFixed(2)} DZD'),
+                  '${variant.name} - ${variant.price.toStringAsFixed(2)} FCFA'),
               selected: isSelected,
               onSelected: (selected) {
                 if (selected) {
@@ -578,7 +578,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               '${tier.minQty}${tier.maxQty != null ? '-${tier.maxQty}' : '+'} units',
             ),
             trailing: Text(
-              '${tier.unitPrice.toStringAsFixed(2)} DZD/unit',
+              '${tier.unitPrice.toStringAsFixed(2)} FCFA/unit',
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 color: AppColors.deepBlue,

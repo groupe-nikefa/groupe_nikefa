@@ -11,6 +11,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/router/app_router.dart';
 import '../../core/providers/auth_provider.dart';
 import '../catalog/providers/catalog_providers.dart';
+import '../../data/demo/demo_products.dart';
 import '../../data/models/product.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -86,29 +87,23 @@ class HomeScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
 
-            // Featured products grid
+            // Featured products grid (demo catalog fallback for sales demos)
             featuredAsync.when(
               data: (products) => _buildFeaturedProductsGrid(
                 context,
-                products,
+                products.isEmpty ? demoProducts : products,
                 currentLocale.languageCode,
+                isDemo: products.isEmpty,
               ),
               loading: () => const SizedBox(
                 height: 200,
                 child: Center(child: CircularProgressIndicator()),
               ),
-              error: (error, stack) => SizedBox(
-                height: 200,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      l10n.failed_to_load_featured_products,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                ),
+              error: (error, stack) => _buildFeaturedProductsGrid(
+                context,
+                demoProducts,
+                currentLocale.languageCode,
+                isDemo: true,
               ),
             ),
 
@@ -164,8 +159,9 @@ class HomeScreen extends ConsumerWidget {
   Widget _buildFeaturedProductsGrid(
     BuildContext context,
     List<Product> products,
-    String localeCode,
-  ) {
+    String localeCode, {
+    bool isDemo = false,
+  }) {
     if (products.isEmpty) {
       return const SizedBox(
         height: 200,
@@ -188,7 +184,11 @@ class HomeScreen extends ConsumerWidget {
       itemCount: products.length,
       itemBuilder: (context, index) {
         final product = products[index];
-        return _FeaturedProductCard(product: product, localeCode: localeCode);
+        return _FeaturedProductCard(
+          product: product,
+          localeCode: localeCode,
+          isDemo: isDemo || isDemoProduct(product),
+        );
       },
     );
   }
@@ -202,10 +202,12 @@ class HomeScreen extends ConsumerWidget {
 class _FeaturedProductCard extends StatelessWidget {
   final Product product;
   final String localeCode;
+  final bool isDemo;
 
   const _FeaturedProductCard({
     required this.product,
     required this.localeCode,
+    this.isDemo = false,
   });
 
   @override
@@ -215,7 +217,13 @@ class _FeaturedProductCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () => context.push('/product/${product.id}'),
+        onTap: () {
+          if (isDemo) {
+            showDemoProductSheet(context, product, localeCode);
+          } else {
+            context.push('/product/${product.id}');
+          }
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -244,7 +252,7 @@ class _FeaturedProductCard extends StatelessWidget {
                     ),
                   ),
 
-                  // Featured badge
+                  // Featured / demo badge
                   Positioned(
                     top: 8,
                     left: 8,
@@ -257,9 +265,9 @@ class _FeaturedProductCard extends StatelessWidget {
                         color: AppColors.goldenYellow,
                         borderRadius: BorderRadius.circular(4),
                       ),
-                      child: const Text(
-                        '★ Featured',
-                        style: TextStyle(
+                      child: Text(
+                        isDemo ? '★ Demo' : '★ Featured',
+                        style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
@@ -288,7 +296,7 @@ class _FeaturedProductCard extends StatelessWidget {
                     ),
                     const Spacer(),
                     Text(
-                      '${product.effectivePrice.toStringAsFixed(2)} DZD',
+                      '${product.effectivePrice.toStringAsFixed(2)} FCFA',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: AppColors.deepBlue,
                             fontWeight: FontWeight.bold,
@@ -303,4 +311,170 @@ class _FeaturedProductCard extends StatelessWidget {
       ),
     );
   }
+}
+
+// ──────────────────────────────────────────────────────────────
+// Demo product sheet (display-only, for sales demos without backend)
+// ──────────────────────────────────────────────────────────────
+
+/// Shows an attractive bottom sheet for demo products.
+///
+/// Demo products have no backend record, so instead of navigating to
+/// the detail page (which streams from Supabase), we present the
+/// product inline with a call-to-action toward the live catalog.
+void showDemoProductSheet(
+  BuildContext context,
+  Product product,
+  String localeCode,
+) {
+  final l10n = AppLocalizations.of(context)!;
+  showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (sheetContext) {
+      return DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.75,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        builder: (context, scrollController) {
+          return SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Demo image
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
+                  child: CachedNetworkImage(
+                    imageUrl: product.primaryImageUrl,
+                    height: 240,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      height: 240,
+                      color: AppColors.surface,
+                      child: const Center(
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      height: 240,
+                      color: AppColors.deepBlue.withValues(alpha: 0.08),
+                      child: const Icon(
+                        Icons.medical_services_outlined,
+                        size: 64,
+                        color: AppColors.deepBlue,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.goldenYellow,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          localeCode == 'ar'
+                              ? '★ منتج تجريبي'
+                              : '★ Produit démo',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        product.getLocalizedName(localeCode),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        product.sku,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        '${product.effectivePrice.toStringAsFixed(0)} FCFA',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(
+                              color: AppColors.deepBlue,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.check_circle,
+                            size: 16,
+                            color: Colors.green,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            localeCode == 'ar'
+                                ? 'متوفر — ${product.stock} قطعة'
+                                : 'En stock — ${product.stock} unités',
+                            style:
+                                Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      color: Colors.green.shade700,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        product.getLocalizedDescription(localeCode) ?? '',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton.icon(
+                          onPressed: () {
+                            Navigator.of(sheetContext).pop();
+                            context.push('/catalog');
+                          },
+                          icon: const Icon(Icons.grid_view_outlined),
+                          label: Text(l10n.browse_catalog),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppColors.goldenYellow,
+                            foregroundColor: AppColors.deepBlue,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
 }

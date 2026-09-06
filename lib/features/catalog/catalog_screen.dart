@@ -354,7 +354,7 @@ class _ProductCard extends ConsumerWidget {
                     Row(
                       children: [
                         Text(
-                          '${product.effectivePrice.toStringAsFixed(2)} DZD',
+                          '${product.effectivePrice.toStringAsFixed(2)} FCFA',
                           style:
                               Theme.of(context).textTheme.titleMedium?.copyWith(
                                     color: AppColors.deepBlue,
@@ -493,7 +493,7 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                   child: TextField(
                     decoration: const InputDecoration(
                       labelText: 'Min',
-                      suffixText: 'DZD',
+                      suffixText: 'FCFA',
                     ),
                     keyboardType: TextInputType.number,
                     onChanged: (value) {
@@ -508,7 +508,7 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                   child: TextField(
                     decoration: const InputDecoration(
                       labelText: 'Max',
-                      suffixText: 'DZD',
+                      suffixText: 'FCFA',
                     ),
                     keyboardType: TextInputType.number,
                     onChanged: (value) {

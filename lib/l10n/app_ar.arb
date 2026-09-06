@@ -208,7 +208,7 @@
   "customer_role": "الدور",
   "profile_updated": "تم تحديث الملف الشخصي",
   "profile_update_failed": "فشل تحديث الملف الشخصي",
-  "currency_symbol": "د.أ.",
+  "currency_symbol": "FCFA",
   "cancelled_status": "ملغي",
   "share_product": "مشاركة المنتج",
   "share_product_copied": "تم نسخ رابط المنتج",
