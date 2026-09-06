@@ -1337,7 +1337,7 @@ abstract class AppLocalizations {
   /// No description provided for @currency_symbol.
   ///
   /// In ar, this message translates to:
-  /// **'د.أ.'**
+  /// **'FCFA'**
   String get currency_symbol;
 
   /// No description provided for @cancelled_status.
