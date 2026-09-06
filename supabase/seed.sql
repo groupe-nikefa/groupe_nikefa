@@ -69,7 +69,7 @@ INSERT INTO products (sku, name_ar, name_fr, description_ar, description_fr, bas
     'Seringues stériles à usage unique de 5 ml, boîte de 50 unités',
     8.50, 1000,
     'a0000000-0000-0000-0000-000000000002',
-    ARRAY['https://images.unsplash.com/photo-1632685061325-3f0f2c6a4a1e?auto=format&fit=crop&w=600&q=60'],
+    ARRAY['https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=600&q=60'],
     false
   ),
   (

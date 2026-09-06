@@ -79,7 +79,7 @@ const List<Product> demoProducts = [
     stock: 1000,
     isFeatured: true,
     images: [
-      'https://images.unsplash.com/photo-1632685061325-3f0f2c6a4a1e?auto=format&fit=crop&w=600&q=60',
+      'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=600&q=60',
     ],
   ),
   Product(
