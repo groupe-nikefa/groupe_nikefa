@@ -1,15 +1,32 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 abstract final class Env {
-  static String get supabaseUrl =>
-      dotenv.env['SUPABASE_URL'] ??
-      const String.fromEnvironment('SUPABASE_URL',
-          defaultValue: 'https://placeholder.supabase.co');
+  /// Returns SUPABASE_URL from dart-define, env file, or default.
+  static String get supabaseUrl {
+    if (!kIsWeb) {
+      try {
+        return dotenv.env['SUPABASE_URL'] ??
+            const String.fromEnvironment('SUPABASE_URL',
+                defaultValue: 'https://placeholder.supabase.co');
+      } catch (_) {}
+    }
+    return const String.fromEnvironment('SUPABASE_URL',
+        defaultValue: 'https://placeholder.supabase.co');
+  }
 
-  static String get supabaseAnonKey =>
-      dotenv.env['SUPABASE_ANON_KEY'] ??
-      const String.fromEnvironment('SUPABASE_ANON_KEY',
-          defaultValue: 'placeholder-anon-key');
+  /// Returns SUPABASE_ANON_KEY from dart-define, env file, or default.
+  static String get supabaseAnonKey {
+    if (!kIsWeb) {
+      try {
+        return dotenv.env['SUPABASE_ANON_KEY'] ??
+            const String.fromEnvironment('SUPABASE_ANON_KEY',
+                defaultValue: 'placeholder-anon-key');
+      } catch (_) {}
+    }
+    return const String.fromEnvironment('SUPABASE_ANON_KEY',
+        defaultValue: 'placeholder-anon-key');
+  }
 
   static String get appName =>
       dotenv.env['APP_NAME'] ??

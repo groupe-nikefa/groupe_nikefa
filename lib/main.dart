@@ -2,6 +2,7 @@
 // Entry point: initializes Riverpod, Supabase, localization,
 // routing, and connectivity.
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -21,27 +22,42 @@ import 'core/hive/hive_registry.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await dotenv.load(fileName: '.env');
+  try {
+    await dotenv.load(fileName: '.env');
+  } catch (_) {
+    // .env not available on web, skip
+  }
 
-  await Hive.initFlutter();
-  await initHiveAdapters();
+  try {
+    if (kIsWeb) {
+      Hive.init('');
+    } else {
+      await Hive.initFlutter();
+    }
+    await initHiveAdapters();
+  } catch (_) {
+    // Hive may not fully support web, app continues without it
+  }
 
   // Initialize Supabase.
   // Note: StartupValidation handles Supabase initialization to show
   // a user-friendly error screen with retry if it fails.
   // await initializeSupabase();
 
-  // Lock orientation to portrait for a consistent mobile experience.
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+  if (!kIsWeb) {
+    // Lock orientation to portrait for a consistent mobile experience.
+    try {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
 
-  // Set the status bar style to match the golden yellow AppBar.
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: AppColors.goldenYellow,
-    statusBarIconBrightness: Brightness.dark,
-  ));
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarColor: AppColors.goldenYellow,
+        statusBarIconBrightness: Brightness.dark,
+      ));
+    } catch (_) {}
+  }
 
   runApp(const ProviderScope(child: NikefaApp()));
 }
